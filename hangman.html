@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Word Guessing Game (Hangman)</title>
+  <style>
+    body { 
+      font-family: "Comic Sans MS", cursive; 
+      text-align: center; 
+      background: #f0f8ff; 
+    }
+    h2 { margin: 20px; font-size: 32px; color: darkblue; }
+    #wordDisplay { font-size: 28px; letter-spacing: 10px; margin: 20px; }
+    #keyboard button { 
+      margin: 5px; padding: 10px 15px; 
+      font-size: 18px; border-radius: 5px; 
+      cursor: pointer; 
+    }
+    #status { font-size: 22px; margin: 20px; }
+    .playAgainBtn, .backBtn {
+      margin-top: 20px; 
+      font-size: 20px; 
+      padding: 10px 25px; 
+      border-radius: 10px; 
+      cursor: pointer; 
+      display: none;
+    }
+    .playAgainBtn { background: green; color: white; }
+    .backBtn { background: red; color: white; }
+  </style>
+</head>
+<body>
+
+  <h2>🔤 Word Guessing Game (Hangman)</h2>
+  <div id="wordDisplay"></div>
+  <div id="keyboard"></div>
+  <h3 id="status"></h3>
+  <button class="playAgainBtn" onclick="startGame()">🔄 Play Again</button>
+  <button class="backBtn" onclick="window.parent.goBack()">⬅ Return to Hub</button>
+
+  <script>
+    // ✅ Extended Word List
+    const words = [
+      "APPLE", "MANGO", "ORANGE", "COMPUTER", "PYTHON", "JAVASCRIPT", "NOTEBOOK",
+      "SCHOOL", "FRIENDSHIP", "SCIENCE", "TEACHER", "PROJECT", "PROGRAMMING", 
+      "HANGMAN", "PAKISTAN", "BOOK", "KEYBOARD", "MOUSE", "BASKETBALL", "FOOTBALL",
+      "HOSPITAL", "CLASSROOM", "TELEVISION", "INTERNET", "STUDENT", "EXAMINATION", 
+      "KNOWLEDGE", "LIBRARY", "SUBJECT", "CHALK", "BLACKBOARD", "CULTURE", "TRAVEL",
+      "LANGUAGE", "HISTORY", "GEOGRAPHY", "CHEMISTRY", "BIOLOGY", "MATHEMATICS"
+    ];
+
+    let selectedWord, displayWord, lives;
+
+    function startGame() {
+      selectedWord = words[Math.floor(Math.random() * words.length)];
+      displayWord = Array(selectedWord.length).fill("_");
+      lives = 6;
+
+      document.getElementById("status").innerText = "Lives left: " + lives;
+      document.getElementById("wordDisplay").innerText = displayWord.join(" ");
+      document.querySelector(".playAgainBtn").style.display = "none";
+      document.querySelector(".backBtn").style.display = "none";
+
+      renderKeyboard();
+    }
+
+    function renderKeyboard() {
+      let keyboardDiv = document.getElementById("keyboard");
+      keyboardDiv.innerHTML = "";
+      for (let i = 65; i <= 90; i++) {
+        let letter = String.fromCharCode(i);
+        let button = document.createElement("button");
+        button.innerText = letter;
+        button.onclick = () => guess(letter, button);
+        keyboardDiv.appendChild(button);
+      }
+    }
+
+    function guess(letter, button) {
+      button.disabled = true;
+
+      if (selectedWord.includes(letter)) {
+        for (let i = 0; i < selectedWord.length; i++) {
+          if (selectedWord[i] === letter) displayWord[i] = letter;
+        }
+        document.getElementById("wordDisplay").innerText = displayWord.join(" ");
+        if (!displayWord.includes("_")) {
+          document.getElementById("status").innerText = "🎉 You Won!";
+          endGame();
+        }
+      } else {
+        lives--;
+        document.getElementById("status").innerText = "❌ Wrong! Lives left: " + lives;
+        if (lives <= 0) {
+          document.getElementById("status").innerText = "💀 Game Over! Word was: " + selectedWord;
+          endGame();
+        }
+      }
+    }
+
+    function endGame() {
+      document.querySelectorAll("#keyboard button").forEach(btn => btn.disabled = true);
+      document.querySelector(".playAgainBtn").style.display = "inline-block";
+      document.querySelector(".backBtn").style.display = "inline-block";
+    }
+
+    startGame();
+  </script>
+</body>
+</html>

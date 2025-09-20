@@ -1,0 +1,4 @@
+function goBackToMenu() {
+    document.getElementById('menu').classList.add('active');
+    document.getElementById('game').classList.remove('active');
+}

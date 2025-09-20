@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Game Hub</title>
+  <style>
+    body {
+      background-color: lightblue; 
+      font-family: "Comic Sans MS", cursive;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 50px;
+      font-family: "Brush Script MT", cursive;
+      color: black;
+      margin: 20px;
+      text-shadow: 2px 2px 5px gray;
+    }
+
+    .game-buttons {
+      margin-top: 50px;
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+
+    .game-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 150px; /* keeps picture and button same size */
+    }
+
+    .game-card img {
+      width: 100%;
+      height: 150px;  /* square size */
+      object-fit: cover; /* crop nicely */
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    .game-card button {
+      font-size: 18px;
+      padding: 12px 20px;
+      width: 100%;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      color: white;
+      font-weight: bold;
+      transition: transform 0.2s;
+    }
+
+    .game-card button:hover {
+      transform: scale(1.1);
+    }
+
+    #snakeBtn { background-color: #ff5733; }
+    #ballBtn { background-color: #33b5ff; }
+    #ticBtn { background-color: #28a745; }
+    #pongBtn { background-color: #ff33a6; }
+    #hangmanBtn { background-color: #8e44ad; }
+
+    iframe {
+      width: 100%;
+      height: 600px;
+      border: 4px solid black;
+      margin: 20px auto;
+      display: none;
+      background: white;
+      overflow: hidden;
+    }
+
+    .backBtn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      font-size: 18px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      background-color: red;
+      color: white;
+      cursor: pointer;
+      display: none;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>🎮 Game Hub 🎮</h1>
+
+  <button class="backBtn" onclick="goBack()">⬅ Back to Hub</button>
+
+  <div class="game-buttons">
+    <div class="game-card">
+      <img src="classic-snake.jpg" alt="Snake">
+      <button id="snakeBtn" onclick="openGame('snake.html')">🐍 Snake Game</button>
+    </div>
+
+    <div class="game-card">
+      <img src="ball.webp" alt="Ball & Plate">
+      <button id="ballBtn" onclick="openGame('ball.html')">🏐 Ball & Plate</button>
+    </div>
+
+    <div class="game-card">
+      <img src="tictak.png" alt="Tic Tac Toe">
+      <button id="ticBtn" onclick="openGame('tic.html')">❌⭕ Tic Tac Toe</button>
+    </div>
+
+    <div class="game-card">
+      <img src="pong.jpg" alt="Pong">
+      <button id="pongBtn" onclick="openGame('pong.html')">🎾 Pong/Breakout</button>
+    </div>
+
+    <div class="game-card">
+      <img src="hangman.png" alt="Word Guessing">
+      <button id="hangmanBtn" onclick="openGame('hangman.html')">🔤 Word Guessing</button>
+    </div>
+  </div>
+
+  <iframe id="gameFrame"></iframe>
+
+  <script>
+    function openGame(gameFile) {
+      document.getElementById("gameFrame").src = gameFile;
+      document.getElementById("gameFrame").style.display = "block";
+      document.querySelector(".game-buttons").style.display = "none";
+      document.querySelector(".backBtn").style.display = "inline-block";
+    }
+
+    function goBack() {
+      document.getElementById("gameFrame").style.display = "none";
+      document.querySelector(".game-buttons").style.display = "block";
+      document.querySelector(".backBtn").style.display = "none";
+      document.getElementById("gameFrame").src = "";
+    }
+
+    window.addEventListener("keydown", function(e) {
+      if (["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].includes(e.key)) {
+        e.preventDefault();
+      }
+    }, false);
+  </script>
+</body>
+</html>

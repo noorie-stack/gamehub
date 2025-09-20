@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tic Tac Toe</title>
+  <style>
+    body { background:#e0ffe0; text-align:center; font-family:Arial; }
+    h2 { margin-top:20px; }
+    #board { display:grid; grid-template-columns:repeat(3,100px); grid-gap:5px; justify-content:center; margin:20px auto; }
+    .cell { width:100px; height:100px; font-size:40px; display:flex; align-items:center; justify-content:center; background:white; cursor:pointer; border:2px solid black; }
+    button { margin:10px; padding:10px; font-size:18px; }
+  </style>
+</head>
+<body>
+  <h2>❌⭕ Tic Tac Toe</h2>
+  <button onclick="startGame(false)">Player vs Player</button>
+  <button onclick="startGame(true)">Player vs AI</button>
+  <div id="board"></div>
+  <h3 id="status"></h3>
+  <button onclick="startGame(aiMode)">Play Again</button>
+
+<script>
+let board, currentPlayer, gameOver, aiMode=false;
+
+function startGame(ai){
+  aiMode=ai;
+  board=["","","","","","","","",""];
+  currentPlayer="X";
+  gameOver=false;
+  document.getElementById("status").innerText="Player X's turn";
+  render();
+}
+
+function render(){
+  let boardDiv=document.getElementById("board");
+  boardDiv.innerHTML="";
+  for(let i=0;i<9;i++){
+    let cell=document.createElement("div");
+    cell.className="cell";
+    cell.innerText=board[i];
+    cell.onclick=()=>makeMove(i);
+    boardDiv.appendChild(cell);
+  }
+}
+
+function makeMove(i){
+  if(board[i] || gameOver) return;
+  board[i]=currentPlayer;
+  render();
+
+  // ✅ Wait a tiny bit before checking win (so last move shows first)
+  setTimeout(() => {
+    if(checkWin(currentPlayer)){
+      document.getElementById("status").innerText="Player "+currentPlayer+" won!";
+      gameOver=true;
+      return;
+    }
+    if(board.every(cell=>cell)) {
+      document.getElementById("status").innerText="It's a Draw!";
+      gameOver=true;
+      return;
+    }
+
+    // Switch turn
+    currentPlayer=currentPlayer==="X"?"O":"X";
+    document.getElementById("status").innerText="Player "+currentPlayer+"'s turn";
+
+    // ✅ If AI's turn, delay move
+    if(aiMode && currentPlayer==="O" && !gameOver){
+      setTimeout(aiMove, 1000); // 1 second delay
+    }
+  }, 200); // Small delay (0.2s) so last move shows before win message
+}
+
+function aiMove(){
+  let emptyCells=board.map((v,i)=>v===""?i:null).filter(v=>v!==null);
+  let move=emptyCells[Math.floor(Math.random()*emptyCells.length)];
+  board[move]="O";
+  render();
+
+  // ✅ Check win AFTER showing AI's move
+  setTimeout(() => {
+    if(checkWin("O")){
+      document.getElementById("status").innerText="Player O (AI) won!";
+      gameOver=true;
+      return;
+    }
+    if(board.every(cell=>cell)) {
+      document.getElementById("status").innerText="It's a Draw!";
+      gameOver=true;
+      return;
+    }
+    currentPlayer="X";
+    document.getElementById("status").innerText="Player "+currentPlayer+"'s turn";
+  }, 200);
+}
+
+function checkWin(player){
+  const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  return wins.some(combo=>combo.every(i=>board[i]===player));
+}
+
+startGame(false);
+</script>
+</body>
+</html>
